@@ -4,8 +4,7 @@ from bson.objectid import ObjectId
 import os 
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = os.environ.get("MONGO_URI", "mongodb+srv://Amala203145:Amala2031456@cluster0.t9ibfge.mongodb.net/?retryWrites=true&w=majority") 
-
+app.config["MONGO_URI"] = "mongodb+srv://Amala203145:Amala2031456@cluster0.t9ibfge.mongodb.net/?retryWrites=true&w=majority&maxIdleTimeMS=120000"
 mongo = PyMongo(app)
 
 @app.route('/')
@@ -15,14 +14,20 @@ def index():
 
 @app.route('/create', methods=['POST'])
 def create():
-    code = request.form.get('code')
-    paste_id = mongo.db.pastes.insert_one({'code': code}).inserted_id
-    return redirect(url_for('paste', paste_id=paste_id))
+    try:
+        code = request.form.get('code')
+        paste_id = mongo.db.pastes.insert_one({'code': code}).inserted_id
+        return redirect(url_for('paste', paste_id=paste_id))
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
 
 @app.route('/paste/<paste_id>')
 def paste(paste_id):
-    paste = mongo.db.pastes.find_one({'_id': ObjectId(paste_id)})
-    return render_template('paste.html', paste=paste)
+    try:
+        paste = mongo.db.pastes.find_one({'_id': ObjectId(paste_id)})
+        return render_template('paste.html', paste=paste)
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
 
 @app.route('/delete/<paste_id>')
 def delete(paste_id):
