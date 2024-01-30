@@ -1,4 +1,4 @@
-Flask
-Flask-PyMongo
+Flask==2.0.1
+Flask-PyMongo==2.3.0
 pymongo
 pymongo[srv]
