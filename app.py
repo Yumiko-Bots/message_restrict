@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
+import os 
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://Amala203145:Amala2031456@cluster0.t9ibfge.mongodb.net/?retryWrites=true&w=majority"
+app.config["MONGO_URI"] = "mongodb://localhost:27017/paste_bin"
 mongo = PyMongo(app)
 
 @app.route('/')
@@ -28,4 +29,6 @@ def delete(paste_id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+
