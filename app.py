@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import requests
 
-app = Flask(__name__)
+app = Flask("santhu")
 
 TELEGRAM_BOT_TOKEN = '6399781777:AAHQl6dNdsUKCeJYPqvCbDdhS6pp-qMDuj0'
 TELEGRAM_CHAT_ID = '5810389985'
