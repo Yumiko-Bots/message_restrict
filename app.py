@@ -1,37 +1,38 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_pymongo import PyMongo
-from bson.objectid import ObjectId
-import os 
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://Amala203145:Amala2031456@cluster0.t9ibfge.mongodb.net/?retryWrites=true&w=majority&maxIdleTimeMS=120000"
-mongo = PyMongo(app)
+pastes = []
 
 @app.route('/')
 def index():
-    pastes = mongo.db.pastes.find()
-    return render_template('index.html', pastes=pastes)
+    return render_template('templates/index.html', pastes=pastes)
 
 @app.route('/create', methods=['POST'])
 def create():
     try:
         code = request.form.get('code')
-        paste_id = mongo.db.pastes.insert_one({'code': code}).inserted_id
+        paste_id = len(pastes) + 1  # Assign a simple numerical ID
+        paste = {'_id': paste_id, 'code': code}
+        pastes.append(paste)
         return redirect(url_for('paste', paste_id=paste_id))
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
-@app.route('/paste/<paste_id>')
+@app.route('/paste/<int:paste_id>')
 def paste(paste_id):
     try:
-        paste = mongo.db.pastes.find_one({'_id': ObjectId(paste_id)})
-        return render_template('paste.html', paste=paste)
+        paste = next((p for p in pastes if p['_id'] == paste_id), None)
+        if paste:
+            return render_template('templates/paste.html', paste=paste)
+        else:
+            return "Paste not found."
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
-@app.route('/delete/<paste_id>')
+@app.route('/delete/<int:paste_id>')
 def delete(paste_id):
-    mongo.db.pastes.delete_one({'_id': ObjectId(paste_id)})
+    global pastes
+    pastes = [p for p in pastes if p['_id'] != paste_id]
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
