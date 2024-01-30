@@ -4,7 +4,8 @@ from bson.objectid import ObjectId
 import os 
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://Amala203145:Amala2031456@cluster0.t9ibfge.mongodb.net/?retryWrites=true&w=majority"
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI", "mongodb+srv://Amala203145:Amala2031456@cluster0.t9ibfge.mongodb.net/?retryWrites=true&w=majority") 
+
 mongo = PyMongo(app)
 
 @app.route('/')
@@ -31,4 +32,3 @@ def delete(paste_id):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
