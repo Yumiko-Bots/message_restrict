@@ -1,40 +1,35 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect
+import requests
 
 app = Flask(__name__)
-pastes = []
+
+TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN'
+TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID'
 
 @app.route('/')
 def index():
-    return render_template('templates/index.html', pastes=pastes)
+    return render_template('index.html')
 
-@app.route('/create', methods=['POST'])
-def create():
-    try:
-        code = request.form.get('code')
-        paste_id = len(pastes) + 1  # Assign a simple numerical ID
-        paste = {'_id': paste_id, 'code': code}
-        pastes.append(paste)
-        return redirect(url_for('paste', paste_id=paste_id))
-    except Exception as e:
-        return f"An error occurred: {str(e)}"
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'file' not in request.files:
+        return redirect(request.url)
+    file = request.files['file']
+    if file.filename == '':
+        return redirect(request.url)
+    file_url = upload_file_to_telegram(file)
+    return render_template('result.html', file_url=file_url)
 
-@app.route('/paste/<int:paste_id>')
-def paste(paste_id):
-    try:
-        paste = next((p for p in pastes if p['_id'] == paste_id), None)
-        if paste:
-            return render_template('templates/paste.html', paste=paste)
-        else:
-            return "Paste not found."
-    except Exception as e:
-        return f"An error occurred: {str(e)}"
-
-@app.route('/delete/<int:paste_id>')
-def delete(paste_id):
-    global pastes
-    pastes = [p for p in pastes if p['_id'] != paste_id]
-    return redirect(url_for('index'))
+def upload_file_to_telegram(file):
+    bot_token = TELEGRAM_BOT_TOKEN
+    chat_id = TELEGRAM_CHAT_ID
+    url = f'https://api.telegram.org/bot{bot_token}/sendPhoto'
+    files = {'photo': (file.filename, file.stream, file.mimetype)}
+    data = {'chat_id': chat_id}
+    response = requests.post(url, files=files, data=data)
+    file_id = response.json().get('result', {}).get('photo', [])[0].get('file_id')
+    file_url = f'https://t.me/{bot_token}/{file_id}'
+    return file_url
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
