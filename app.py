@@ -3,8 +3,8 @@ import requests
 
 app = Flask(__name__)
 
-TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN'
-TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID'
+TELEGRAM_BOT_TOKEN = '6399781777:AAHQl6dNdsUKCeJYPqvCbDdhS6pp-qMDuj0'
+TELEGRAM_CHAT_ID = '5810389985'
 
 @app.route('/')
 def index():
