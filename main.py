@@ -17,6 +17,8 @@ def home():
 @app.route('/get_channel_content', methods=['POST'])
 def get_channel_content():
     link = request.json.get('channelUsername')
+    if not link.startswith(('https://t.me/', 'https://telegram.me/', 't.me/')):
+        return jsonify({'success': False, 'errorMessage': 'Invalid message link format'})
     try:
         with bot:
             message = get_message_details(link)
@@ -35,9 +37,9 @@ def get_channel_content():
 
 def get_message_details(message_link):
     parts = message_link.rstrip('/').split('/')
-    if len(parts) >= 5 and parts[0] == 'https:' and parts[1] == '' and parts[2] == 't.me' and parts[3] == 'c':
-        chat_id = int(parts[4])
-        message_id = int(parts[5]) if len(parts) >= 6 else 1
+    if len(parts) >= 5 and parts[0] == 'https:' and parts[1] in ('', 't.me') and parts[2] == 'c':
+        chat_id = int(parts[3])
+        message_id = int(parts[4]) if len(parts) >= 6 else 1
         try:
             with bot:
                 return bot.get_messages(chat_id, message_id)
