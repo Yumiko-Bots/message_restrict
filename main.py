@@ -14,12 +14,14 @@ bot = Client("santhu", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 def home():
     return render_template("index.html")
 
-@app.route('/get_message_content', methods=['POST'])
-def get_message_content():
-    message_link = request.json.get('messageLink')
+@app.route('/get_channel_content', methods=['POST'])
+def get_channel_content():
+    link = request.json.get('channelUsername')
+    if not link.startswith(('https://', 'http://', 't.me/')):
+        return jsonify({'success': False, 'errorMessage': 'Invalid message link format'})
     try:
         with bot:
-            message = get_message_details(message_link)
+            message = get_message_details(link)
             if message:
                 message_content = message.text if message.text else "No text content."
                 photos = [photo.file_id for photo in message.photo]
@@ -29,30 +31,21 @@ def get_message_content():
                     'photos': photos
                 })
             else:
-                return jsonify({
-                    'success': False,
-                    'errorMessage': 'Message not found.'
-                })
+                return jsonify({'success': False, 'errorMessage': 'Failed to fetch message details'})
     except Exception as e:
-        return jsonify({
-            'success': False,
-            'errorMessage': str(e)
-        })
-        
+        return jsonify({'success': False, 'errorMessage': str(e)})
+
 def get_message_details(message_link):
-    link_parts = message_link.split('/')
-    if len(link_parts) == 6 and link_parts[3] == 'c':
+    parts = message_link.rstrip('/').split('/')
+    if len(parts) == 5 and parts[0] == 'https:' and parts[1] == '' and parts[2] == 't.me' and parts[3] == 'c':
+        chat_id = int(parts[4])
+        message_id = 1  
         try:
-            chat_id = int(link_parts[4])
-            message_id = int(link_parts[5])
             with bot:
-                chat = bot.get_chat(chat_id)
-                message = bot.get_messages(chat_id, message_id)       
-                return message
-        except (ValueError, IndexError):
-            return None
-    else:
-        return None
+                return bot.get_chat_history(chat_id, limit=1)[0]
+        except Exception as e:
+            print(f"Error fetching message details: {e}")
+    return None
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
