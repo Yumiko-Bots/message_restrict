@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from pyrogram import Client
 import os
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
+app = Flask(__name__, template_folder="templates")
 
 api_id = 14688437
 api_hash = "5310285db722d1dceb128b88772d53a6"
