@@ -1,6 +1,7 @@
-Flask==2.0.1
 Flask-PyMongo==2.3.0
 pymongo
 pymongo[srv]
 pyrogram
 TgCrypto
+Flask==2.1.2
+Werkzeug==2.1.0
