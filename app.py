@@ -3,7 +3,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 import os
 
-app = Flask("santhu")
+app = Flask(__name__)
 
 api_id = 14688437
 api_hash = "5310285db722d1dceb128b88772d53a6"
@@ -35,5 +35,4 @@ def get_channel_content():
         })
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+   app.run()
