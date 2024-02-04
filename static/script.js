@@ -1,7 +1,7 @@
 function fetchMessage() {
     var link = document.getElementById('message-link').value;
-    if (link.trim() === '') {
-        alert('Please enter a message link.');
+    if (!link.trim().startsWith('https://') && !link.trim().startsWith('http://') && !link.trim().startsWith('t.me')) {
+        alert('Please enter a valid message link starting with "https", "http", or "t.me".');
         return;
     }
     fetch('/get_channel_content', {
