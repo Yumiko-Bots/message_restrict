@@ -12,7 +12,7 @@ bot = Client("santhu", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 @app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template("templates/index.html")
 
 @app.route('/get_channel_content', methods=['POST'])
 def get_channel_content():
