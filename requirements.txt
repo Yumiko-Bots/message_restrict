@@ -5,3 +5,7 @@ pyrogram
 TgCrypto
 Flask==2.1.2
 Werkzeug==2.1.0
+uvicorn
+requests
+httpx
+python-dotenv 
