@@ -12,7 +12,7 @@ bot = Client("santhu", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 @app.route('/')
 def home():
-    return render_template("templates/index.html")
+    return render_template("plugins/templates/index.html")
 
 @app.route('/get_channel_content', methods=['POST'])
 def get_channel_content():
@@ -34,7 +34,6 @@ def get_channel_content():
         })
 
 if __name__ == '__main__':
-    # Use the environment variable PORT if available, otherwise default to 5000
-    port = int(os.environ.get('PORT', 8080))
+    port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
     bot.run()
