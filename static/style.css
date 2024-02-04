@@ -1,7 +1,5 @@
-/* static/style.css */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -9,13 +7,14 @@ body {
 .container {
     max-width: 600px;
     margin: 50px auto;
-    background-color: #fff;
     padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
 }
 
 h1 {
+    text-align: center;
     color: #333;
 }
 
@@ -25,19 +24,28 @@ h1 {
 
 input {
     width: 80%;
-    padding: 8px;
-    margin-right: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 button {
     padding: 10px;
-    background-color: #4caf50;
+    background-color: #4CAF50;
     color: #fff;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
 }
 
 button:hover {
     background-color: #45a049;
 }
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
