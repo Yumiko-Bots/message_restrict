@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from pyrogram import Client
 import os
 
-app = Flask(__name__, template_folder="template")
+app = Flask(__name__, template_folder="template", static_folder="static")
 
 api_id = 14688437
 api_hash = "5310285db722d1dceb128b88772d53a6"
@@ -48,4 +48,3 @@ def get_message_details(message_link):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
-    bot.run()
