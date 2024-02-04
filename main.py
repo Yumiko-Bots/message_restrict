@@ -34,11 +34,7 @@ def get_channel_content():
         })
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    from uvicorn.workers import UvicornWorker
-    uvicorn_options = {
-        "host": "0.0.0.0",
-        "port": port,
-    }
-    UvicornWorker(app, uvicorn_options).run()
+    # Use the environment variable PORT if available, otherwise default to 5000
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port, debug=True)
     bot.run()
