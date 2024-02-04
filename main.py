@@ -17,8 +17,6 @@ def home():
 @app.route('/get_channel_content', methods=['POST'])
 def get_channel_content():
     link = request.json.get('channelUsername')
-    if not link.startswith(('https://', 'http://', 't.me/')):
-        return jsonify({'success': False, 'errorMessage': 'Invalid message link format'})
     try:
         with bot:
             message = get_message_details(link)
@@ -37,12 +35,12 @@ def get_channel_content():
 
 def get_message_details(message_link):
     parts = message_link.rstrip('/').split('/')
-    if len(parts) == 5 and parts[0] == 'https:' and parts[1] == '' and parts[2] == 't.me' and parts[3] == 'c':
+    if len(parts) >= 5 and parts[0] == 'https:' and parts[1] == '' and parts[2] == 't.me' and parts[3] == 'c':
         chat_id = int(parts[4])
-        message_id = 1  
+        message_id = int(parts[5]) if len(parts) >= 6 else 1
         try:
             with bot:
-                return bot.get_chat_history(chat_id, limit=1)[0]
+                return bot.get_messages(chat_id, message_id)
         except Exception as e:
             print(f"Error fetching message details: {e}")
     return None
