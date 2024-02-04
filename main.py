@@ -1,9 +1,8 @@
 from flask import Flask, render_template, request, jsonify
-from pyrogram import Client, filters
-from pyrogram.types import Message
+from pyrogram import Client
 import os
 
-app = Flask(__name__)
+app = Flask("santhu")
 
 api_id = 14688437
 api_hash = "5310285db722d1dceb128b88772d53a6"
@@ -35,4 +34,11 @@ def get_channel_content():
         })
 
 if __name__ == '__main__':
-   bot.run()
+    port = int(os.environ.get('PORT', 5000))
+    from uvicorn.workers import UvicornWorker
+    uvicorn_options = {
+        "host": "0.0.0.0",
+        "port": port,
+    }
+    UvicornWorker(app, uvicorn_options).run()
+    bot.run()
