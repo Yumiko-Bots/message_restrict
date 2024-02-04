@@ -1,36 +1,37 @@
-from flask import Flask, render_template, request, redirect
-import requests
+from flask import Flask, render_template, request, jsonify
+from pyrogram import Client, filters
+from pyrogram.types import Message
 
-app = Flask("santhu")
+app = Flask(__name__)
 
-TELEGRAM_BOT_TOKEN = '6399781777:AAHQl6dNdsUKCeJYPqvCbDdhS6pp-qMDuj0'
-TELEGRAM_CHAT_ID = '5810389985'
+api_id = 14688437
+api_hash = "5310285db722d1dceb128b88772d53a6"
+bot_token = "6162291374:AAGieKLuy_e7Id8G2pQaXRiNsuiviWgalDE"
+
+bot = Client("santhu", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    if 'file' not in request.files:
-        return redirect(request.url)
-    file = request.files['file']
-    if file.filename == '':
-        return redirect(request.url)
-    file_url = upload_file_to_telegram(file)
-    return render_template('result.html', file_url=file_url)
-
-def upload_file_to_telegram(file):
-    bot_token = TELEGRAM_BOT_TOKEN
-    chat_id = TELEGRAM_CHAT_ID
-    url = f'https://api.telegram.org/bot{bot_token}/sendPhoto'
-    files = {'photo': (file.filename, file.stream, file.mimetype)}
-    data = {'chat_id': chat_id}
-    response = requests.post(url, files=files, data=data)
-    file_id = response.json().get('result', {}).get('photo', [])[0].get('file_id')
-    file_url = f'https://t.me/{bot_token}/{file_id}'
-    return file_url
+@app.route('/get_channel_content', methods=['POST'])
+def get_channel_content():
+    channel_username = request.json.get('channelUsername')
+    try:
+        with bot:
+            message = bot.get_chat_history(channel_username, limit=1)[0]
+            message_content = message.text if message.text else "No text content."
+            photos = [photo.file_id for photo in message.photo]
+            return jsonify({
+                'success': True,
+                'messageContent': message_content,
+                'photos': photos
+            })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'errorMessage': str(e)
+        })
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(debug=True)
