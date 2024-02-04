@@ -9,3 +9,5 @@ uvicorn
 requests
 httpx
 python-dotenv 
+gunicorn==20.1.0
+
