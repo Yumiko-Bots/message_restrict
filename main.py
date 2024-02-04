@@ -11,8 +11,8 @@ bot_token = "6162291374:AAGieKLuy_e7Id8G2pQaXRiNsuiviWgalDE"
 bot = Client("santhu", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+def home():
+    return render_template("index.html")
 
 @app.route('/get_channel_content', methods=['POST'])
 def get_channel_content():
